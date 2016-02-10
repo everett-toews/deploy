@@ -6,21 +6,21 @@ Clone this repository once for each deconst instance you wish to administer. The
 
 ## Prerequisites
 
-TODO
+* [Docker Swarm](https://www.docker.com/products/docker-swarm) cluster (or [create and connect to a Carina cluster](https://getcarina.com/docs/tutorials/create-connect-cluster/))
+* [Docker Compose](https://www.docker.com/products/docker-compose)
 
 ## Running
 
 To deploy or update a cluster:
 
-1. Copy the example credentials file and fill in your credentials and customizations. Alternately, use a credentials file corresponding to an existing deployment you'd like to maintain.
+1. Copy the example env file and fill in your credentials and customizations. Alternately, use a env file corresponding to an existing deployment you'd like to maintain.
 
     ```bash
-    cp credentials.example.yml credentials.yml
-    ${EDITOR} credentials.yml
-
-    # Or:
-    script/decrypt ~/cred-repo/credentials-staging.yml.enc
+    cp env.example env
+    ${EDITOR} env
     ```
+
+
 
 1. Run the `deploy` script.
 

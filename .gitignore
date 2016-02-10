@@ -1,7 +1,6 @@
+env
 *.pyc
 warnings.log
 credentials.yml
-inventory/static
-.galaxy
 .etcd_cluster_token
 certificates/

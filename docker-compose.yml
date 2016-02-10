@@ -1,0 +1,74 @@
+---
+registrator:
+  image: gliderlabs/registrator:v6
+  external_links:
+    - consul
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  command: consul://consul:8500
+
+mongo:
+  image: mongo:2.6
+  links:
+    - registrator
+  ports:
+    - 27017
+
+elasticsearch:
+  image: elasticsearch:1.7
+  links:
+    - registrator
+  ports:
+    - 9200
+    - 9300
+
+content:
+  image: quay.io/deconst/content-service
+  links:
+    - mongo
+    - elasticsearch
+    - registrator
+  ports:
+    - 9000:8080
+  restart: always
+  environment:
+    STORAGE:
+    RACKSPACE_USERNAME:
+    RACKSPACE_APIKEY:
+    RACKSPACE_REGION:
+    ADMIN_APIKEY:
+    CONTENT_CONTAINER:
+    ASSET_CONTAINER:
+    MONGODB_URL: mongodb://mongo:27017/content
+    ELASTICSEARCH_HOST: http://elasticsearch:9200/
+    CONTENT_LOG_LEVEL: DEBUG
+    CONTENT_LOG_COLOR: "true"
+
+presenter:
+  image: quay.io/deconst/presenter
+  links:
+    - content
+  ports:
+    - 80:8080
+  environment:
+    CONTROL_REPO_PATH: /tmp/control-repo
+    CONTROL_REPO_URL:
+    CONTROL_REPO_BRANCH:
+    CONTENT_SERVICE_URL: http://content:8080/
+    PRESENTER_DIAGNOSTICS: "true"
+    PRESENTED_URL_PROTO:
+    PRESENTED_URL_DOMAIN:
+    PRESENTER_LOG_LEVEL: DEBUG
+    PRESENTER_DEVMODE:
+    PRESENTER_LIVERELOAD:
+    PRESENTER_LOG_JSON: "false"
+    PRESENTER_LOG_COLOR: "true"
+
+nginx:
+  image: quay.io/deconst/nginx
+  links:
+    - content:content
+    - presenter:presenter
+  ports:
+    - 9000:9000
+    - 443:443
